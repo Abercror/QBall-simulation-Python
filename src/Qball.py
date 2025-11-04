@@ -22,16 +22,6 @@ class Qball(NumericalMethods):
             value = 0
         
         return value
-    
-    def updateSecondOrder(self, delta, method, tildeOmega):
-        methods = {
-            "RungeKutta": self.rungeKuttaSecondOrder
-        }
-        numericalMethod = methods[method]
-
-        self.x, self.xDerivative = numericalMethod(self.tildePosition, self.x, self.xDerivative, delta, self.xSecondDerivative, tildeOmega)
-
-
 
     def tildeEnergyDerivative(self, tildePosition, energy, tildeOmega):
         value = 4 * math.pi * (tildePosition**2) * (0.5 * (self.xDerivative**2) + 0.5 * (tildeOmega**2) * (self.x**2) + 1 - math.cos(self.x))
@@ -39,14 +29,4 @@ class Qball(NumericalMethods):
     
     def tildeChargeDerivative(self, tildePosition, charge, *args):
         return 4 * math.pi * (self.x**2) * (tildePosition**2)
-
-
-    def updateFirstOrder(self, delta, method, tildeOmega):
-        methods = {
-            "RungeKutta": self.rungeKuttaFirstOrder
-        }
-        numericalMethod = methods[method]
-
-        self.tildeEnergy = numericalMethod(self.tildePosition, self.tildeEnergy, delta, self.tildeEnergyDerivative, tildeOmega)
-        self.tildeCharge = numericalMethod(self.tildePosition, self.tildeCharge, delta, self.tildeChargeDerivative, tildeOmega)
 

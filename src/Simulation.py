@@ -23,6 +23,28 @@ class Simulation:
         self.history["Reduced Energy"].append(self.particle.tildeEnergy)
         self.history["Reduced Charge"].append(self.particle.tildeCharge)
 
+    def updateFirstOrder(self, delta, method, tildeOmega):
+        methods = {
+            "RungeKutta": self.particle.rungeKuttaFirstOrder
+        }
+        numericalMethod = methods[method]
+
+        self.particle.tildeEnergy = numericalMethod(self.particle.tildePosition, self.particle.tildeEnergy, delta, self.particle.tildeEnergyDerivative, tildeOmega)
+        self.particle.tildeCharge = numericalMethod(self.particle.tildePosition, self.particle.tildeCharge, delta, self.particle.tildeChargeDerivative, tildeOmega)
+
+    def updateSecondOrder(self, delta, method, tildeOmega):
+        methods = {
+            "RungeKutta": self.particle.rungeKuttaSecondOrder
+        }
+        numericalMethod = methods[method]
+
+        self.particle.x, self.particle.xDerivative = numericalMethod(self.particle.tildePosition, self.particle.x, self.particle.xDerivative, delta, self.particle.xSecondDerivative, tildeOmega)
+
+
+    def update(self, delta, method, tildeOmega):
+        self.updateSecondOrder(delta, method, tildeOmega)
+        self.updateFirstOrder(delta, method, tildeOmega)
+        
     def clearData(self):
         self.history = {"Reduced Position": [],
                         "Reduced Phi": [],
@@ -31,8 +53,8 @@ class Simulation:
                         }
 
     def run(self, steps, delta, method, tildeOmega):
+        self.updateFirstOrder(delta, method, tildeOmega)
         for _ in range(steps):
             self.record()
-            self.particle.updateSecondOrder(delta, method, tildeOmega)
-            self.particle.updateFirstOrder(delta, method, tildeOmega)
+            self.update(delta, method, tildeOmega)
             self.particle.tildePosition += delta

@@ -7,7 +7,7 @@ import numpy as np
 import math
 
 startingPosition = 0
-endingPosition = 100000
+endingPosition = 100
 delta = 0.01
 steps = math.floor((endingPosition - startingPosition) / delta)
 
@@ -44,14 +44,11 @@ def main(method):
         graphName = f"{index} Omega = {tildeOmega[index]}.png"
         graphLocation = Path(resultsDirectory, graphName)
 
-        particle.updateFirstOrder(delta, method, i)
-
         sim = Simulation(particle)
         sim.run(steps, delta, method, i)
-    
         graphing(sim.history, graphLocation)
-        print(i)
         sim.clearData()
+        print(i)
 
 if __name__ == "__main__":
     main(method)
