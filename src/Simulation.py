@@ -25,7 +25,7 @@ class Simulation:
 
     def updateFirstOrder(self, delta, method, tildeOmega):
         methods = {
-            "RungeKutta": self.particle.rungeKuttaFirstOrder
+            "RungeKutta": self.particle.rungeKutta4FirstOrder
         }
         numericalMethod = methods[method]
 
@@ -34,7 +34,7 @@ class Simulation:
 
     def updateSecondOrder(self, delta, method, tildeOmega):
         methods = {
-            "RungeKutta": self.particle.rungeKuttaSecondOrder
+            "RungeKutta": self.particle.rungeKutta4SecondOrder
         }
         numericalMethod = methods[method]
 

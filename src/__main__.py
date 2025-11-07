@@ -7,21 +7,21 @@ import numpy as np
 import math
 
 startingPosition = 0
-endingPosition = 100
-delta = 0.01
+endingPosition = 1000
+delta = 0.1
 steps = math.floor((endingPosition - startingPosition) / delta)
 
 # functionA = 10e12
 # Lambda = math.sqrt(0.135 * 0.13)
 
-tildeOmega = [i for i in np.linspace(-2, 2, 100)]
-# omega = [1]
-# tildeOmega = [(functionA*i)/(Lambda**2) for i in omega]
+x0 = [i for i in np.linspace(0, 1, 100)]
+tildeOmega = [i for i in np.linspace(0,1, 100)]
+# tildeOmega = [1]
 
 method = "RungeKutta"
 
-def initialQballValues(startingPosition):
-    x = np.float64(6.0)
+def initialQballValues(startingPosition, i):
+    x = np.float64(i)
     dx = np.float64(0)
     tildePosition = np.float64(startingPosition)
     tildeEnergy = np.float64(0)
@@ -29,26 +29,30 @@ def initialQballValues(startingPosition):
     particle = Qball(x, dx, tildePosition, tildeEnergy, tildeCharge)
     return particle
 
-def fileStructure():
+def fileStructure(xvalue, index):
     qBallSimulation = Path(__file__).parent.parent
     resultsDirectory = Path(qBallSimulation, "Results")
     resultsDirectory.mkdir(parents=True, exist_ok=True)
-    return resultsDirectory
+    xFolder = Path(resultsDirectory, f"{index} Initial x = {xvalue}")
+    xFolder.mkdir(parents=True, exist_ok=True)
+    return xFolder
 
 def main(method):
-    resultsDirectory = fileStructure()
 
-    for i in tildeOmega:
-        index = tildeOmega.index(i)
-        particle = initialQballValues(startingPosition)
-        graphName = f"{index} Omega = {tildeOmega[index]}.png"
-        graphLocation = Path(resultsDirectory, graphName)
+    for i in x0:
+        x0index = x0.index(i)
+        xFolder = fileStructure(i, x0index)
+        for j in tildeOmega:
+            omegaIndex = tildeOmega.index(j)
+            particle = initialQballValues(startingPosition, i)
+            graphName = f"{omegaIndex} Omega = {tildeOmega[omegaIndex]}.png"
+            graphLocation = Path(xFolder, graphName)
 
-        sim = Simulation(particle)
-        sim.run(steps, delta, method, i)
-        graphing(sim.history, graphLocation)
-        sim.clearData()
-        print(i)
+            sim = Simulation(particle)
+            sim.run(steps, delta, method, j)
+            graphing(sim.history, graphLocation)
+            sim.clearData()
+            print(i)
 
 if __name__ == "__main__":
     main(method)

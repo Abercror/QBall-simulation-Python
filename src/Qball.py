@@ -8,7 +8,8 @@ class Qball(NumericalMethods):
                  xDerivative, 
                  tildePosition, 
                  tildeEnergy, 
-                 tildeCharge):
+                 tildeCharge,
+                 ):
         self.x = x
         self.xDerivative = xDerivative
         self.tildePosition = tildePosition
@@ -29,4 +30,5 @@ class Qball(NumericalMethods):
     
     def tildeChargeDerivative(self, tildePosition, charge, *args):
         return 4 * math.pi * (self.x**2) * (tildePosition**2)
+
 
